@@ -1,0 +1,248 @@
+{extend name='public/base' /}
+
+{block name="css"}
+
+{/block}
+
+{block name="content"}
+        <div class="ibox xiaoshi ">
+            <div class="ibox-content">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <form class="form-inline" id="form">
+
+                                <div class="col-sm-3">
+                                    <div class="input-group">
+                                        <div class="input-group-btn">
+                                            <button data-toggle="dropdown" class="btn btn-white dropdown-toggle" type="button">菜单名称</button>
+                                        </div>
+                                        <input type="text" name="title" autocomplete="off" class="form-control"  placeholder="请输入名称">
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <a class="btn btn-primary btn-rounded btn-sm" onclick="$.treeTable.searchTree()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                        <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-content">
+
+                <div class="btn-group-sm" id="toolbar" role="group">
+
+                    <a class="btn btn-success {:node('AuthRule/addAuth')}" onclick="open_tan()">
+                        <i class="fa fa-plus"></i> 新增顶级菜单
+                    </a>
+                    <a class="btn btn-primary single " onclick="edit()">
+                        <i class="fa fa-edit"></i> 修改
+                    </a>
+                    <a class="btn btn-danger multiple " onclick="delall()">
+                        <i class="fa fa-remove"></i> 删除
+                    </a>
+                    <a class="btn btn-primary" onclick="$.treeTable.refresh()">
+                        <i class="fa fa-search"></i> 刷新
+                    </a>
+                </div>
+
+                <div class="table-striped">
+                    <table id="bootstrap-tree-table"></table>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{/block}
+
+
+{block name="js"}
+<script>
+
+    function ff() {
+        var urls="{:url('test')}";
+        $.treeTable.CreateOpenForm("测试",'45%','73%',urls);
+        return false;
+    }
+
+    $(function() {
+        var options = {
+            url:"{:url('index')}",
+            type:1,
+            idField: 'id', //获取的ID值
+            toolbar: "toolbar",
+            height: 0,
+            //在哪一列展开树形
+            treeShowField: 'title',
+            //指定父id列
+            parentIdField: 'pid',
+            formId:'form', //查询表单formID
+            modalName:'菜单',
+            columns: [
+                { field: 'check',  checkbox: true, formatter: function (value, row, index) {
+                    if (row.check == true) {
+                        return {  checked: true };
+                    }
+                }
+                },
+                {field: 'title',  title: '菜单名称' },
+                {field: 'icon',  title: '图标',
+                    formatter: function(value, row, index) {
+                        if ($.common.isNotEmpty(value)) {
+                             return '<i class="'+row.font_family+' '+value+'"></i>'
+                        } else {
+                            return '-';
+                        }
+                    }},
+                {field: 'id',  title: 'ID',sortable:true},
+                {
+                    field: 'type',
+                    title: '类型',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        if (value == 1) {
+                            return '<span class="badge badge-info">菜单</span>';
+                        } else{
+                            return '<span class="badge badge-warning">按钮</span>';
+                        }
+                    }
+                },
+                {
+                    field: 'status',
+                    title: '操作状态',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        if (value === 1) {
+                            return '<span class="label label-success">正常</span>';
+                        } else {
+                            return '<span class="label label-default">禁止</span>';
+                        }
+                    }
+                },
+                {
+                    field: 'auth_open',
+                    title: '权限',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        if (value == 1) {
+                            return '<span class="badge badge-danger">验证</span>';
+                        } else{
+                            return '<span class="badge badge-info">不验证</span>';
+                        }
+                    }
+                },
+                {
+                    field: 'name',
+                    title: '请求地址',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                       // return $.table.tooltip(value,10,'open');
+                        return $.table.tooltip(value);
+                    }
+                },
+                {field: 'sort', title: '排序', align: 'center',sortable:true},
+                { field: 'create_time', title: '添加时间' ,align: 'left'},
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        if (row.type==1){
+                            if (row.level < 2){
+                                actions.push('<a class="btn btn-xs btn-success {:node(\'AuthRule/addAuth\')}" data-original-title="添加子菜单" data-toggle="tooltip" onclick="add_son(\'' + row.id + '\')"><i class="fa fa-plus-square-o"></i></a>');
+                            }
+                            if (row._no==1){
+                                actions.push('<a class="btn btn-xs btn-primary {:node(\'AuthRule/addNode\')}" data-original-title="添加按钮" data-toggle="tooltip" onclick="add_nodes(\'' + row.id + '\')"><i class="fa fa-plus"></i></a>');
+                                //无子集
+                            }
+                        }
+                        actions.push('<a class="btn btn-info btn-xs {:node(\'AuthRule/update\')}" data-original-title="修改" data-toggle="tooltip" onclick="update(\'' + row.id + '\')"><i class="fa fa-edit"></i></a>');
+                        actions.push('<a class="btn btn-danger btn-xs {:node(\'AuthRule/del\')}" data-original-title="删除" data-toggle="tooltip" onclick="del(\'' + row.id + '\')"><i class="fa fa-remove"></i></a>');
+                        return actions;
+                    }
+                }
+            ]
+        };
+       $.treeTable.init(options);
+    });
+
+/*添加顶级菜单*/
+    function open_tan() {
+        var urls="{:url('addAuth')}";
+        $.treeTable.CreateOpenForm("添加菜单",'45%','73%',urls);
+        return false;
+    }
+    /*添加子菜单*/
+    function  add_son(id) {
+        var urls="{:url('addAuth')}?id="+id;
+        $.treeTable.CreateOpenForm("添加子菜单",'45%','73%',urls);
+        return false;
+    }
+    
+    /*编辑*/
+    function update(id) {
+        var urls="{:url('update')}?id="+id;
+        $.treeTable.CreateOpenForm("编辑",'45%','73%',urls);
+        return false;
+    }
+    /*添加按钮*/
+    function add_nodes(id) {
+        var urls="{:url('addNode')}?id="+id;
+        $.treeTable.CreateOpenForm("添加菜单按钮",'45%','73%',urls);
+        return false;
+    }
+   /*单个删除*/
+    function  del(id) {
+        var urls="{:url('del')}";
+        $.treeTable.FormatData(id,urls);
+        return false;
+    }
+     //编辑
+    function edit() {
+        var selRows = $("#" + treeTable.options.id).bootstrapTable("getSelections");
+        if(selRows.length == 0){
+            $.models.toastr_error("请至少选择一行");
+            return;
+        }
+        var postData = [];
+        $.each(selRows,function(i) {
+            postData.push(this.id)
+        });
+        update(postData[0]);
+    }
+     /*批量删除*/
+    function delall() {
+        var selRows = $("#" + treeTable.options.id).bootstrapTable("getSelections");
+        if(selRows.length == 0){
+            $.models.toastr_error("请至少选择一行");
+            return;
+        }
+        var postData = "";
+        $.each(selRows,function(i) {
+            postData +=  this.id;
+            if (i < selRows.length - 1) {
+                postData += ",";
+            }
+        });
+        $.treeTable.FormatData(postData,"{:url('del_all')}");
+        return false;
+    }
+
+</script>
+
+{/block}

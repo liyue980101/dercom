@@ -1,0 +1,48 @@
+{extend name='public/layui' /}
+{block name="content"}
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body" style="">
+            <form class="layui-form" action="" lay-filter="form">
+                <!--Ueditor-->
+                 <textarea name="content" placeholder="" id="content"  lay-verify="required" lay-verType="tips" lay-reqText="内容不能为空"></textarea>
+
+                {:build_ueditor(['name'=>'content','content'=>$content])}
+
+                <div class="layui-form-item layui-layout-admin " style="width: 100%">
+                    <div class="layui-input-block">
+                        <div class="layui-footer" style="left: 0px;text-align: center;">
+                            <button class="layui-btn" lay-submit="" lay-filter="add">确定</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['element', 'form', 'jquery','upload'], function () {
+        var element = layui.element;
+        var table = layui.table;
+        var form = layui.form;
+        var $ = layui.jquery;
+        var upload = layui.upload;
+
+        form.on('submit(add)', function (data) {
+            var parentinputname = '{$Request.param.fodder}';
+            var font= ue.getContent();
+            if (font == null ||font.trim() == "") {
+                layer.msg("内容不能为空");
+                return false;
+            }
+            parent.$f.changeField(parentinputname,font);
+            parent.$f.closeModal(parentinputname);
+            return false;
+        });
+    })
+</script>
+
+{/block}
+

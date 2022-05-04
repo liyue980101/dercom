@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <title>{:sysconfig('site','site_name')}</title>
+    <meta name="keywords" content="{:sysconfig('site','site_keywords')}">
+    <meta name="description" content="{:sysconfig('site','site_description')}">
+    <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+    <![endif]-->
+    <link rel="shortcut icon" href="__STA__/b.jpg">
+    <link href="__PLUG__/bootstrap-3.3.7/css/bootstrap.min.css?v=3.3.7" rel="stylesheet">
+
+    <link href="__PLUG__/font-awesome/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="__BCSS__/animate.css" rel="stylesheet">
+
+    <link href="__BCSS__/style.css?v={:time()}" rel="stylesheet">
+</head>
+
+<body class="fixed-sidebar full-height-layout gray-bg" style="overflow:hidden">
+<div id="wrapper">
+    <!--左侧导航开始-->
+       {include file="public/left" /}
+    <!--左侧导航结束-->
+
+
+    <!--头部部分开始-->
+    {include file="public/header" /}
+    <!--头部部分结束-->
+
+
+    <!--右侧边栏开始-->
+    {include file="public/right_set" /}
+    <!--右侧边栏结束-->
+
+
+
+<!--mini聊天窗口开始-->
+
+<!--mini聊天窗口结束-->
+</div>
+
+
+<!-- 全局js -->
+<script src="__JS__/jquery.min.js?v=2.1.4"></script>
+
+<script src="__PLUG__/bootstrap-3.3.7/js/bootstrap.min.js?v=3.3.7"></script>
+
+<script src="__BJS__/plugins/metisMenu/jquery.metisMenu.js"></script>
+
+<script src="__BJS__/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+<script src="__BJS__/plugins/layer/layer.min.js"></script>
+
+<!-- 自定义js -->
+<script src="__BJS__/hplus.js?v=4.1.0"></script>
+
+<script type="text/javascript" src="__BJS__/contabs.js?v={:time()}"></script>
+
+<!-- 第三方插件 -->
+<script src="__BJS__/plugins/pace/pace.min.js"></script>
+
+</body>
+
+</html>

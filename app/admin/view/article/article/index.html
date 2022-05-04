@@ -1,0 +1,221 @@
+{extend name='public/base' /}
+{block name="css"}
+
+{/block}
+{block name="content"}
+
+<div class="ibox xiaoshi">
+    <div class="ibox-content">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form class="form-inline" id="user-form">
+                    <div class="select-list">
+                        <ul>
+                            {:li_input('文章标题','title')}
+
+                            {:li_select(['1'=>'否','2'=>'是'],'是否置顶','is_top')}
+
+                            {:li_select(['1'=>'否','2'=>'是'],'是否显示','is_show')}
+
+                            <li class="select-selectpicker">
+                                文章栏目：
+                                <select name="cate_id" class="selectpicker" data-none-selected-text="请选择">
+                                    <option value="">所有</option>
+                                    {$cate|make_option='','title_show','id'}
+                                </select>
+                            </li>
+
+                            {:li_select(['1'=>'否','2'=>'是'],'是否推荐','is_recommend')}
+
+                            {:li_time()}
+
+                            {:li_search()}
+
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox">
+            <div class="ibox-content">
+                <div class="btn-group-sm" id="toolbar" role="group">
+                    <a class="btn btn-success  btn-rounded {:node('article.Article/add')}" onclick="$.form.add('','90%','80%')">
+                        <i class="fa fa-plus"></i> 新增
+                    </a>
+                    <a class="btn btn-primary btn-rounded single {:node('article.Article/edit')}" onclick="$.form.edit('','90%','80%')">
+                        <i class="fa fa-edit"></i> 修改
+                    </a>
+                    <a class="btn btn-danger btn-rounded multiple {:node('article.Article/del')}" onclick="$.form.removeAll()">
+                        <i class="fa fa-remove"></i> 删除
+                    </a>
+                    <a class="btn btn-warning btn-rounded {:node('article.Article/export')}" onclick="$.table.exportExcel()">
+                        <i class="fa fa-download"></i> 导出
+                    </a>
+                    <a class="btn btn-info btn-rounded {:node('article.Article/recycle')}" onclick="recycle()">
+                        <i class="fa fa-recycle"></i> 回收站
+                    </a>
+                </div>
+                <div class="table-striped">
+                    <table id="bootstrap-table" ></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}
+
+{block name="js"} <!--js处理区-->
+
+<script>
+    $(function() {
+        var options = {
+            url: "{:url('index')}",
+            deleteUrl:  "{:url('del')}?id={id}", //删除链接
+            exportUrl:  "{:url('export')}",  //导出
+            updateUrl: "{:url('edit')}?id={id}", //编辑
+            addUrl:    "{:url('add')}", //添加
+            detailUrl:  "/detailUrl",    //详细
+            sortName: "id",
+            sortOrder: "desc",
+            modalName: "文章列表",
+            clickToSelect: false,
+            onDblClickRow:onDblClickRow, //双击行编辑
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'id',
+                    title: 'ID'
+                },
+                {
+                    field: 'title',
+                    title: '文章标题',
+                    formatter: function(value, row, index) {
+                        return $.table.tooltip(value,50,'open');
+                    }
+                },
+                {
+                    field: 'cates.name',
+                    title: '文章栏目'
+                },
+                {
+                    field: 'img_url',
+                    title: '图-Url',
+                    formatter: function(value, row, index) {
+                        str='';
+                        if($.common.isNotEmpty(value)){
+                            str='<a class="text-success" onclick="$.table.imageClickView(\'' + value + '\')" title="查看大图"><i class="fa fa-picture-o"></i></a>';
+                        }
+                        if($.common.isNotEmpty(row.url)){
+                            str+='&nbsp;&nbsp-&nbsp;<a class="text-danger" href="'+row.url+'" target="_blank" title="点击访问"><i class="fa fa-link"></i></a>';
+                        }
+                        return str;
+                    }
+                },
+                {
+                    field: 'keywords',
+                    title: '关键词',
+                    formatter: function(value, row, index) {
+                        return $.table.tooltip(value,40,'open');
+                    }
+                },
+                {
+                    field: 'author',
+                    title: '作者'
+                },
+                {
+                    field: 'origin',
+                    title: '来源'
+                },
+                {
+                    field: 'is_top',
+                    title: '置顶',
+                    formatter: function(value, row, index) {
+                        if(value==0){
+                            return '<span class="badge badge-primary">否</span>';
+                        }else {
+                            return '<span class="badge badge-warning">是</span>';
+                        }
+                    }
+                },
+                {
+                    field: 'hits',
+                    title: '点击量'
+                },
+                {
+                    field: 'is_show',
+                    title: '是否显示',
+                    formatter: function(value, row, index) {
+                        if(value==0){
+                            return '<span class="badge badge-warning">不展示</span>';
+                        }else {
+                            return '<span class="badge badge-info">展示</span>';
+                        }
+                    }
+                },
+                {
+                    field: 'comment_num',
+                    title: '评论量'
+                },
+                {
+                    field: 'is_recommend',
+                    title: '是否推荐',
+                    formatter: function(value, row, index) {
+                        if(value==0){
+                            return '<span class="badge badge-danger">不推荐</span>';
+                        }else {
+                            return '<span class="badge badge-info">推荐</span>';
+                        }
+                    }
+                },
+                {
+                    field: 'love',
+                    title: '喜欢量'
+                },
+                {
+                    field: 'create_time',
+                    title: '添加时间',
+                    sortable: true
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        return edit_del(row);
+                    }
+
+                }]
+        };
+        $.table.init(options);
+    });
+
+    function edit_del(row) {
+        var actions = [];
+        actions.push('<a class="btn btn-xs btn-success  {:node(\'article.Article/edit\')}" data-original-title="编辑" data-toggle="tooltip" onclick="$.form.edit(\'' + row.id + '\',\'90%\',\'80%\')"><i class="fa fa-edit"></i></a>');
+        actions.push('<a class="btn btn-danger btn-xs {:node(\'article.Article/del\')}" data-original-title="删除" data-toggle="tooltip" onclick="$.form.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i></a>');
+        return actions;
+    }
+
+
+    //回收站
+    function recycle() {
+         $.form.OpenForm("回收站","{:url('recycle')}","70%","95%",true);
+         return false;
+    }
+
+    //双击行编辑
+    function onDblClickRow(row) {
+        $.form.edit(row.id);
+    }
+
+
+</script>
+
+{/block}

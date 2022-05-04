@@ -1,0 +1,141 @@
+{extend name='public/base' /}
+{block name="css"}
+
+{/block}
+{block name="content"}
+<div class="ibox xiaoshi">
+    <div class="ibox-content">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form class="form-inline" id="user-form">
+                    <div class="select-list">
+                        <ul>
+                               {:li_input('名称','title')}
+
+                               {:li_select(['1'=>'停用','2'=>'正常'],'状态','status')}
+
+                               {:li_time('时间范围')}
+
+                               {:li_search()}
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox">
+            <div class="ibox-content">
+                <div class="btn-group-sm" id="toolbar" role="group">
+                    <a class="btn btn-success  btn-rounded {:node('$controllerName/add')}" onclick="$.form.add()">
+                        <i class="fa fa-plus"></i> 新增
+                    </a>
+                    <a class="btn btn-primary btn-rounded single " onclick="$.form.edit()">
+                        <i class="fa fa-edit"></i> 修改
+                    </a>
+                    <a class="btn btn-danger btn-rounded multiple " onclick="$.form.removeAll()">
+                        <i class="fa fa-remove"></i> 删除
+                    </a>
+                    <a class="btn btn-warning btn-rounded" onclick="$.table.exportExcel()">
+                        <i class="fa fa-download"></i> 导出
+                    </a>
+                </div>
+                <div class="table-striped">
+                    <table id="bootstrap-table" ></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}
+
+{block name="js"} <!--js处理区-->
+
+<script>
+    $(function() {
+        var options = {
+            url: "{:url('index')}",
+            deleteUrl:  "{:url('del')}?id={id}", //删除链接
+            exportUrl:  "{:url('export')}",  //导出
+            updateUrl: "{:url('edit')}?id={id}", //编辑
+            addUrl:    "{:url('add')}", //添加
+            detailUrl:  "/detailUrl",    //详细
+            sortName: "id",
+            sortOrder: "asc",
+            modalName: "",
+            onEditableSave: onEditableSave, //行内编辑
+            onDblClickRow:onDblClickRow, //双击行编辑
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'id',
+                    title: 'ID'
+                },
+                 {
+                      field: 'status',
+                      title: '状态',
+                      align: 'center',
+                      formatter: function(value, row, index) {
+                       if (value == 0) {
+                           return '<span class="badge badge-danger">禁止</span>';
+                        } else{
+                          return '<span class="badge badge-info">正常</span>';
+                        }
+                    }
+                  },
+               {
+                 field: 'name',
+                 title: '请求地址',
+                 align: 'center',
+                 formatter: function(value, row, index) {
+                 // return $.table.tooltip(value,10,'open');
+                  return $.table.tooltip(value);
+                  }
+                },
+                {
+                    field: 'create_time',
+                    title: '添加时间',
+                    sortable: true
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                          return edit_del(row);
+                    }
+
+                }]
+        };
+        $.table.init(options);
+    });
+
+    function edit_del(row) {
+            var actions = [];
+            actions.push('<a class="btn btn-xs btn-success  {:node(\'$controllerName/edit\')}" data-original-title="编辑" data-toggle="tooltip" onclick="$.form.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i></a>');
+            actions.push('<a class="btn btn-danger btn-xs {:node(\'$controllerName/del\')}" data-original-title="删除" data-toggle="tooltip" onclick="$.form.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i></a>');
+            return actions;
+    }
+
+
+
+    //双击行编辑
+    function onDblClickRow(row) {
+      $.form.edit(row.id);
+    }
+
+
+     //行内编辑
+        function onEditableSave() {
+
+        }
+
+</script>
+
+{/block}

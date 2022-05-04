@@ -1,0 +1,165 @@
+
+{extend name='public/base' /}
+{block name="css"}
+
+{/block}
+{block name="content"}
+<div class="ibox xiaoshi">
+    <div class="ibox-content">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form class="form-inline" id="user-form">
+                    <div class="select-list">
+                        <ul>
+                             <li class="select-selectpicker">
+                                 附件类型：
+                                  <select class="selectpicker" name="type" data-none-selected-text="请选择" >
+                                      <option value="">所有</option>
+                                      {$type|make_option='','type','type'}
+                                  </select>
+                              </li>
+                            <li>
+                            </li>
+
+                            {:li_time('选择时间')}
+
+                            {:li_search()}
+
+                        </ul>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox">
+            <div class="ibox-content">
+                <div class="btn-group-sm" id="toolbar" role="group">
+                    <a class="btn btn-success  btn-rounded {:node('AttachMents/uploadAttachment')}" onclick="$.form.add()">
+                        <i class="fa fa-upload"></i> 上传附件
+                    </a>
+                    <a class="btn btn-danger btn-rounded multiple {:node('AttachMents/del')}" onclick="$.form.removeAll()">
+                        <i class="fa fa-remove"></i> 删除
+                    </a>
+                    <a class="btn btn-warning btn-rounded {:node('AttachMents/download')}" onclick="dabao()">
+                        <i class="fa fa-download"></i> 打包下载
+                    </a>
+                </div>
+                <div class="table-striped">
+                    <table id="bootstrap-table" ></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}
+
+{block name="js"} <!--js处理区-->
+
+<script>
+    $(function() {
+        var options = {
+            url: "{:url('index')}",
+            deleteUrl:  "{:url('del')}?id={id}", //删除链接
+            exportUrl:  "",  //导出
+            updateUrl: "", //编辑
+            addUrl:    "{:url('uploadAttachment')}", //添加
+            detailUrl:  "",    //详细
+            sortName: "id",
+            sortOrder: "asc",
+            modalName: "附件管理",
+            onDblClickRow:onDblClickRow, //双击行编辑
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'id',
+                    title: 'ID'
+                },
+                {
+                    field: 'name',
+                    title: '名称'
+                },
+                {
+                    field: 'size',
+                    title: '大小'
+                },
+                {
+                    field: 'type',
+                    title: '类型'
+                },
+                {
+                    field: 'image_type',
+                    title: '上传类型'
+                },
+                {
+                    field: 'module_type',
+                    title: '上传模块'
+                },
+                {
+                    field: 'att_dir',
+                    title: '路径',
+                    formatter: function(value, row, index) {
+                        return '<a  class="btn btn-primary btn-xs"  onclick="xiazai('+row.id+')" >下载</a>'
+                    }
+                },
+                {
+                    field: 'create_time',
+                    title: '添加时间',
+                    sortable: true
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        return edit_del(row);
+                    }
+
+                }]
+        };
+        $.table.init(options);
+    });
+
+    //打包下载
+    function dabao() {
+        table.set();
+        var rows = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
+        ids=rows.join();
+        if($.isArray(ids)) {
+            ids = ids.join(',');
+        }
+        if ($.common.isEmpty(ids)) {
+            $.models.toastr_error("没选择任何数据");return ;
+        }
+        var url="{:url('download')}?id="+ids;
+        window.location.href=url;
+    }
+    
+    function edit_del(row) {
+            var actions = [];
+            actions.push('<a class="btn btn-danger btn-xs {:node(\'AttachMents/del\')}" data-original-title="删除" data-toggle="tooltip" onclick="$.form.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i></a>');
+            return actions;
+    }
+
+    function xiazai(id) {
+        var url="{:url('sign_down')}?id="+id;
+        window.location.href=url;
+    }
+
+    //双击行编辑
+    function onDblClickRow(row) {
+        // alert(JSON.stringify(row))
+        var url="{:url('sign_down')}?id="+row.id;
+        window.location.href=url;
+
+    }
+
+</script>
+
+{/block}

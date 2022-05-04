@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+    <title>JrkAdmin_Tp6 - 登录</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link href="__PLUG__/bootstrap-3.3.7/css/bootstrap.min.css?v=3.3.7" rel="stylesheet">
+    <link href="__PLUG__/font-awesome/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <!-- Sweet Alert -->
+    <link href="__BCSS__/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+
+    <link href="__BCSS__/animate.css?v={:time()}" rel="stylesheet">
+    <link href="__BCSS__/style.css?v={:time()}" rel="stylesheet">
+    <link href="__BCSS__/login.css?v={:time()}" rel="stylesheet">
+    <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+    <![endif]-->
+    <script>
+        if (window.top !== window.self) {
+            window.top.location = window.location;
+        }
+    </script>
+
+</head>
+
+<body class="signin">
+<div class="signinpanel">
+    <div class="row">
+        <div class="col-sm-7">
+            <div class="signin-info">
+                <div class="logopanel m-b">
+                    <h1>JrkAdmin_Tp6</h1>
+                </div>
+                <div class="m-b"></div>
+                <h4>欢迎使用 <strong>JrkAdmin（TP6.0.3版本）</strong></h4>
+                <ul class="m-b">
+                    <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> RABC权限验证</li>
+                    <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> 易扩展，性能优越</li>
+                    <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> 代码开源无加密</li>
+                    <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> 快速开发的后台管理系统</li>
+                    <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> 全新的架构和模块化的开发机制</li>
+                </ul>
+                <strong>QQ交流群: 498186248</strong>
+            </div>
+        </div>
+        <div class="col-sm-5">
+            <form method="post" id="form" >
+                <h4 class="no-margins">JrkAdmin-后台登录</h4>
+                <p class="m-t-md">你若不离不弃，我必生死相依</p>
+                <input type="text" name="username" class="form-control uname" placeholder="用户名" value="" />
+                <input type="password" name="password" class="form-control pword m-b" placeholder="密码" value="" />
+                <input type="hidden" name="__token__" id="token" value="{:token()}"/>
+                <button class="btn btn-success btn-block login" >登 录</button>
+            </form>
+        </div>
+    </div>
+    <div class="signup-footer">
+        <div class="pull-left">
+           Copyright © 2019-2022 by LuckyHHY All rights reserved.
+        </div>
+    </div>
+</div>
+
+<!-- 全局js -->
+<script src="__JS__/jquery.min.js?v=2.1.4"></script>
+<script src="__PLUG__/bootstrap-3.3.7/js/bootstrap.min.js?v=3.3.7"></script>
+
+<!-- Sweet alert -->
+<script src="__BJS__/plugins/sweetalert/sweetalert.min.js"></script>
+
+<script>
+    // 刷新验证码操作
+   /* $("#captchaImg").click(function () {
+        $(this).attr("src", $(this).attr("src") + '?' + Math.random());
+    });*/
+
+    $(".login").click(function () {
+         if ($(".uname").val().trim()==""){
+             swal({
+                 title: "错误",
+                 text: "请输入用户名",
+                 type: "warning"
+             });
+             return false;
+         }
+        if ($(".pword").val().trim()==""){
+            swal({
+                title: "错误",
+                text: "请输入密码",
+                type: "warning"
+            });
+            return false;
+        }
+        $.ajax({
+            url:"{:url('login/loginCheck')}",
+            dataType:"json",
+            type:'post',
+            data:$("#form").serialize(),
+            success:function(data){
+                if(data.code==1)
+                {
+                    setTimeout(function(){
+                        window.location.href = data.url;
+                    },800);
+                }
+                else
+                {
+                    swal({
+                        title: "错误",
+                        text: data.msg,
+                        type: "warning"
+                    });
+                }
+            },
+            error:function () {
+                swal({
+                    title: "错误",
+                    text: "网络错误",
+                    type: "warning"
+                });
+            }
+        });
+        return false;
+    });
+
+    $(document).keyup(function(event){
+        if(event.keyCode ==13){
+            $(".login").trigger("click");
+        }
+    });
+</script>
+
+
+
+</body>
+
+</html>

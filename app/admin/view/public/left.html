@@ -1,0 +1,64 @@
+<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="nav-close"><i class="fa fa-times-circle"></i>
+    </div>
+    <div class="sidebar-collapse">
+        <ul class="nav" id="side-menu">
+            <li class="nav-header">
+                <div class="dropdown profile-element">
+                    <span><img alt="image" class="img-circle" width="60" height="60" src="{empty name='$_info.avatar'}__IMG__/avatar.jpg {else /} {$_info.avatar} {/empty}" /></span>
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                                <span class="clear" style="margin-top: 5px;">
+                                <span class="block m-t-xs"><strong class="font-bold">{$_info.username}</strong></span>
+                                <span class="text-muted text-xs block">{$_info.nickname}<b class="caret"></b></span>
+                                </span>
+                    </a>
+                    <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                        <li><a class="J_menuItem" href="{:url('Admin/changPass')}" data-index="9899">修改密码</a>
+                        </li>
+                        <li><a class="J_menuItem" href="{:url('Admin/baseData')}" data-index="9898">基本资料</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="javascript:" class="J_clearCache">清除缓存</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="javascript:" class="J_tabExit">安全退出</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="logo-element">DER
+                </div>
+            </li>
+
+            {volist name="menulist" id="v" key="k"}
+              {if isset($v['children'])}
+               <li>
+                <a href="#"><i class="{$v.font_family} {$v.icon}"></i> <span class="nav-label">{$v.title}</span><span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        {volist name="$v['children']" id="s" key="k2"}
+                        {if isset($s['children'])}
+                        <li>
+                            <a href="#"><i class="{$s.font_family} {$s.icon}"></i><span class="nav-label">{$s.title}</span> <span class="fa arrow"></span></a>
+                            <ul class="nav nav-third-level">
+                                {volist name="$s['children']" id="t"  key="k3"}
+                                       <li><a class="J_menuItem" href="{if(isset($t['url']))} {$t['url']} {else} {$t['name']} {/if}"><i class="{$t.font_family} {$t.icon}"></i><span class="nav-label">{$t.title}</span></a></li>
+                                {/volist}
+                            </ul>
+                        </li>
+
+                        {else /}
+                        <li><a class="J_menuItem" href="{if(isset($s['url']))} {$s['url']} {else} {$s['name']} {/if}"><i class="{$s.font_family} {$s.icon}"></i><span class="nav-label">{$s.title}</span></a></li>
+                        {/if}
+                        {/volist}
+                    </ul>
+               </li>
+             {else /}
+              <li>
+                <a class="J_menuItem" href="{if(isset($v['url']))} {$v['url']} {else} {$v['name']} {/if}"><i class="{$v.font_family} {$v.icon}"></i> <span class="nav-label">{$v.title}</span></a>
+               </li>
+            {/if}
+            {/volist}
+
+
+        </ul>
+    </div>
+</nav>

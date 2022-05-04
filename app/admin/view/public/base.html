@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{block name="title"}{:sysconfig('site','site_name')}{/block}</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="msapplication-TileImage"
+          content="__STA__/b.jpg">
+    <link rel="shortcut icon" href="__STA__/b.jpg">
+
+    <link rel="icon" href="__STA__/b.jpg"
+          sizes="">
+    <!--main css-->
+    <link href="__PLUG__/bootstrap-3.3.7/css/bootstrap.min.css?v=3.3.7" rel="stylesheet">
+    <link href="__PLUG__/font-awesome/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="__BCSS__/animate.css" rel="stylesheet">
+    <link href="__BCSS__/style.css?v={:time()}" rel="stylesheet">
+    <!--main js-->
+    <script src="__JS__/jquery.min.js?v=2.1.4"></script>
+    <!--layui-->
+    <link rel="stylesheet" href="__PLUG__/layui/css/layui.css?v=2.5.6">
+    <script src="__PLUG__/layui/layui.js?v=2.5.6"></script>
+
+    <!--layer-->
+    <script src="__BJS__/plugins/layer/layer.min.js?v={:time()}"></script>
+
+    <script src="__BJS__/start.js?v={:time()}"></script>
+
+    <link href="__BCSS__/plugins/iCheck/custom.css?v={:time()}" rel="stylesheet">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="__PLUG__/bootstrap-table/bootstrap-table.min.css">
+    <!--editable -css-->
+    <link rel="stylesheet" href="__PLUG__/bootstrap-table/extensions/editable/bootstrap-editable.css">
+    <!--treetable-css-->
+    <link rel="stylesheet" href="__PLUG__/bootstrap-table/extensions/treegrid/css/jquery.treegrid.min.css">
+
+     <!--消息提示-->
+    <link href="__BCSS__/plugins/toastr/toastr.min.css?v={:time()}" rel="stylesheet">
+    <!-- Sweet Alert -->
+    <link href="__BCSS__/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+
+    <link href="__PLUG__/bootstrap_select/css/bootstrap-select.css" rel="stylesheet">
+
+    {block name="css"}{/block}
+
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeIn">
+    {block name="content"}{/block}
+</div>
+
+<!-- 全局js -->
+
+<script src="__PLUG__/bootstrap-3.3.7/js/bootstrap.min.js?v=3.3.7"></script>
+<!-- 自定义js -->
+<script src="__BJS__/content.js?v=1.0.0"></script>
+
+
+{include file="public/js" /}
+<!-- Sweet alert -->
+<script src="__BJS__/plugins/sweetalert/sweetalert.min.js"></script>
+<!-- Toastr script -->
+<script src="__BJS__/plugins/toastr/toastr.min.js?v={:time()}"></script>
+<!-- select -->
+<script src="__PLUG__/bootstrap_select/js/bootstrap-select.js"></script>
+
+<!--bootstrap-table-->
+<script src="__BJS__/jrk_bootstrap_table.js?v={:time()}"></script>
+<!--下拉 treetable-->
+<script src="__BJS__/jrk_treeTable.js?v={:time()}"></script>
+<!--树插件-->
+<script src="__BJS__/jrk_tree.js?v={:time()}"></script>
+<!--通用方法-->
+<script src="__BJS__/jrk_common.js?v={:time()}"></script>
+
+<!--回顶部-->
+<a id="scroll-up" href="#" class="btn btn-sm display"><i class="fa fa-angle-double-up"></i></a>
+
+{block name="js"}{/block}
+
+</body>
+
+</html>

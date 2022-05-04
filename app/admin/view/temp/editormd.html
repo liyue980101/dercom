@@ -1,0 +1,91 @@
+{extend name='public/layui' /}
+{block name="content"}
+<link rel="stylesheet" href="__PLUG__/editormd-master/css/editormd.css?v=1">
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <form class="layui-form" action="" lay-filter="form">
+                <a href="http://editor.md.ipandao.com/" target="_blank">http://editor.md.ipandao.com/</a>
+                <div id="test-editormd">
+                    <textarea style="display: none;" name="ks"></textarea>
+                </div>
+                <div class="layui-form-item layui-layout-admin " style="width: 100%">
+                    <div class="layui-input-block">
+                        <div class="layui-footer" style="left: 0px;text-align: center;">
+                            <button class="layui-btn" lay-submit="" lay-filter="add">确定</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="__PLUG__/editormd-master/editormd.js"></script>
+
+<script type="text/javascript">
+    var testEditor;
+    md="{$content}";
+    $(function() {
+            testEditor = editormd("test-editormd", {
+                width: "100%",
+                height: 450,
+                path  : '__PLUG__/editormd-master/lib/',
+                theme : "default",
+                previewTheme : "default",
+                editorTheme : "default",
+                markdown : md,
+                codeFold : true,
+                syncScrolling : true,
+                saveHTMLToTextarea : true,    // 保存 HTML 到 Textarea
+                searchReplace : true,
+                //watch : false,                // 关闭实时预览
+                htmlDecode : "style,script,iframe|on*",            // 开启 HTML 标签解析，为了安全性，默认不开启
+                toolbar  : true,             //关闭工具栏
+                //previewCodeHighlight : false, // 关闭预览 HTML 的代码块高亮，默认开启
+                emoji : true,
+                taskList : true,
+                tocm            : true,         // Using [TOCM]
+                tex : true,                   // 开启科学公式TeX语言支持，默认关闭
+                flowChart : true,             // 开启流程图支持，默认关闭
+                sequenceDiagram : true,       // 开启时序/序列图支持，默认关闭,
+                imageUpload : true,
+                imageFormats : ["jpg", "jpeg", "gif", "png", "bmp"],
+                imageUploadURL : "/admin/common/uploadEditormdImages",
+                onload : function() {
+                   // console.log('onload', this);
+                    //this.fullscreen();
+                    //this.unwatch();
+                    //this.watch().fullscreen();
+                    //this.setMarkdown("#PHP");
+                    //this.width("100%");
+                    //this.height(480);
+                    //this.resize("100%", 640);
+                }
+            });
+        });
+
+</script>
+<script>
+    layui.use(['element', 'form', 'jquery','upload'], function () {
+        var element = layui.element;
+        var table = layui.table;
+        var form = layui.form;
+        var $ = layui.jquery;
+        var upload = layui.upload;
+
+        form.on('submit(add)', function (data) {
+            var parentinputname = '{$Request.param.fodder}';
+            var font= testEditor.getMarkdown();
+            if (font == null ||font.trim() == "") {
+                layer.msg("内容不能为空");
+                return false;
+            }
+            parent.$f.changeField(parentinputname,font);
+            parent.$f.closeModal(parentinputname);
+            return false;
+        });
+    })
+</script>
+
+{/block}
+
