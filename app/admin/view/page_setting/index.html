@@ -97,6 +97,15 @@
                     sortable: true
                 },
                 {
+                    field: 'page_index',
+                    title: '落地页地址',
+                    formatter: function(value, row, index) {
+                        var protocol = document.location.protocol;
+                        var domain = document.domain;
+                        return protocol + '//' + domain + '/index/page/index/' + row['page_num'];
+                    }
+                },
+                {
                     title: '操作',
                     align: 'center',
                     formatter: function(value, row, index) {
